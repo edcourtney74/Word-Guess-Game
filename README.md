@@ -1,2 +1,2 @@
 # Word-Guess-Game
-Game where the player has to try and guess the word
+In this game, the user tries to guess the word before running out of attempts.
