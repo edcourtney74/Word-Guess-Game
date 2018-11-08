@@ -15,7 +15,7 @@ var lettersGuessed = [];
 var wins = 0;
 
 // Variable that contains Guesses Left
-var guessesLeft = 7;
+var guessesLeft;
 
 // Variable that contains random puzzle selected
 var currentPuzzle;
@@ -36,11 +36,21 @@ var lettersGuessedText = document.getElementById("lettersguessed-text");
 // GLOBAL FUNCTION================================================
 
 function startGame() {
+    // Select current puzzle from array at random
     currentPuzzle = puzzleWords[Math.floor(Math.random() * puzzleWords.length)];
+    // Convert currentPuzzle to an array of a string of letters
+    puzzleLetters = currentPuzzle.split('');
+    console.log(`Array of letters in the puzzle: ${puzzleLetters}`);guessesLeft = 7;
+   
+    // displays guesses left on screen
     guessesLeft = 7;
     guessesLeftText.textContent = guessesLeft;
+    
+    // empties lettersGuessed array, displays on screen
     lettersGuessed = [];
     lettersGuessedText.textContent = lettersGuessed;
+    
+    
     instructionsText.textContent = "Press a key to begin!";
     console.log("Game started");
     console.log(`Current puzzle selected: ${currentPuzzle}.`);
@@ -57,10 +67,6 @@ document.onkeyup = function (event) {
 
     // Store user choice as a variable, make it lowercase
     var userLetter = event.key.toLowerCase();
-
-    // Convert currentPuzzle to an array of a string of letters
-    puzzleLetters = currentPuzzle.split('');
-    console.log(`Array of letters in the puzzle: ${puzzleLetters}`);
 
     // Verifies that user's choice is a letter and has not been guessed yet
     // - won't run if it's not
@@ -87,7 +93,6 @@ document.onkeyup = function (event) {
             }
         }
 
-
         //   If letter is in the puzzle, 
         else {
 
@@ -105,6 +110,15 @@ document.onkeyup = function (event) {
                     puzzleLetters.splice(i, 1);
                     console.log(`Letters remaining to guess in puzzle: ${puzzleLetters}`);
                 }
+
+            // Check if puzzle was solved or if more guesses need to be made
+            // If puzzle solved:
+            if (puzzleLetters.length === 0) {
+                wins ++;
+                winsText.textContent = wins;
+                alert('You got it!');
+                startGame();
+            }
 
 
             }
