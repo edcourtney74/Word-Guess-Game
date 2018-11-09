@@ -71,7 +71,6 @@ function startGame() {
     lettersGuessed = [];
     lettersGuessedText.textContent = lettersGuessed;
 
-    instructionsText.textContent = "Press a key to begin!";
 }
 
 // MAIN PROCESS===============================================
