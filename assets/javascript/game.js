@@ -8,8 +8,14 @@ var puzzleWords = ["cardinals", "catcher", "pitcher", "incompletion", "lateral",
     "hurdles", "badminton", "wicket", "equestrian", "backstroke", "javelin", "slider", "goaltender", "recruiting",
     "nascar", "tailgating", "swish", "traveling", "decathlon"]
 
-// Array for letters guessed so far, which is blank at the start of the game
-var lettersGuessed = [];
+// Array for letters guessed wrongly so far, which is blank at the start of the game
+var lettersGuessedWrongly = [];
+
+// Array to display letters guessed wrongly so far
+var lettersGuessedWronglyDisplay = [];
+
+// Array for letters guessed correctly so far, which is blank at the start of the game
+var lettersGuessedCorrectly = [];
 
 // Variable that contains Wins
 var wins = 0;
@@ -33,8 +39,14 @@ var blanks = [];
 // Array that will hold display letters
 var displayLetters = [];
 
+// Variable that contains the displayLetters to show on the screen
+var finalDisplayLetters;
+
 // Variable that contains letter chosen by user
 var userLetter;
+
+// Array that contains puzzles previous played so they can't be played again until refresh
+var removedPuzzles = [];
 
 // Variables that hold references to places in the HTML
 var instructionsText = document.getElementById("instructions-text");
@@ -42,6 +54,7 @@ var winsText = document.getElementById("wins-text");
 var puzzleText = document.getElementById("puzzle-text");
 var guessesLeftText = document.getElementById("guessesleft-text");
 var lettersGuessedText = document.getElementById("lettersguessed-text");
+var previousPuzzleText = document.getElementById("previouspuzzle-text");
 
 // GLOBAL FUNCTION================================================
 
@@ -60,17 +73,26 @@ function startGame() {
         displayLetters.splice(i, 1, "_");
     }
 
-    // Display puzzle blanks on screen
-    puzzleText.innerHTML = displayLetters;
+    // Convert updated word with blanks to a string to display
+    finalDisplayLetters = displayLetters.join("");
+
+    // Displays puzzle with blanks on screen
+    puzzleText.innerHTML = finalDisplayLetters;
 
     // displays guesses left on screen
     guessesLeft = 7;
     guessesLeftText.textContent = guessesLeft;
 
-    // empties lettersGuessed array, displays on screen
-    lettersGuessed = [];
-    lettersGuessedText.textContent = lettersGuessed;
+    // empties lettersGuessedWrongly array
+    lettersGuessedWrongly = [];
 
+    // empties lettersGuessedCorrectly array
+    lettersGuessedCorrectly = [];
+
+    // Displays no letters guessed so far on display
+    lettersGuessedText.textContent = "None";
+
+    console.log(puzzleWords);
 }
 
 // MAIN PROCESS===============================================
@@ -86,7 +108,7 @@ document.onkeyup = function (event) {
 
     // Verifies that user's choice is a letter and has not been guessed yet
     // - won't run if it's not
-    if ((alphabet.includes(userLetter)) && (!lettersGuessed.includes(userLetter))) {
+    if ((alphabet.includes(userLetter)) && (!lettersGuessedWrongly.includes(userLetter)) && (!lettersGuessedCorrectly.includes(userLetter))) {
 
         // Check to see if letter is in the puzzle
         // If letter is not in the puzzle
@@ -94,17 +116,40 @@ document.onkeyup = function (event) {
             // Reduce guesses left by 1
             guessesLeft--;
             guessesLeftText.textContent = guessesLeft;
-            // Add letter guessed to array of letters guessed so far
-            lettersGuessed.push(userLetter);
-            lettersGuessedText.textContent = lettersGuessed;
+            // Add letter guessed to array of letters guessed wrongly so far
+            lettersGuessedWrongly.push(userLetter);
+
+            // Convert letters guessed wrongly to a string to diplay
+            lettersGuessedWronglyDisplay = lettersGuessedWrongly.join(" ");
+
+            // Displays incorrect guesses on screen
+            lettersGuessedText.textContent = lettersGuessedWronglyDisplay;
 
             // Check if guesses remain to continue
             if (guessesLeft === 0) {
-                // Reveal answer somewhere using TextContent
-                // Could add removing puzzle from possible list so it's not reused
-                // Start a new game
-                startGame();
-            }
+                // Display modal saying the user lost
+                $('#lostModal').modal('show');
+                
+                // Reveal answer
+                previousPuzzleText.innerHTML = `Previous puzzle: ${currentPuzzle}`;
+
+                // Remove this puzzle from word list so it doesn't come up again
+                removedPuzzles = puzzleWords.indexOf(currentPuzzle);
+                if (removedPuzzles > -1) {
+                    puzzleWords.splice(removedPuzzles, 1);
+                    console.log(`Number of puzzles remaining: ${puzzleWords.length}`);
+                }
+
+                // Check if any new puzzles remain
+                if (puzzleWords.length > 0) {
+                    // Start a new game
+                    startGame();
+                } else 
+                    // Inform the user that they've played all the puzzles.
+                    $('#allPlayedModal').modal('show');
+                
+                
+                }
         }
         //   If letter is in the puzzle, 
         else {
@@ -118,12 +163,14 @@ document.onkeyup = function (event) {
                 }
             }
 
+            // Convert updated word with letters/blanks to a string to display
+            finalDisplayLetters = displayLetters.join("");
+
             // Displays puzzle with correct guesses on screen
-            puzzleText.innerHTML = displayLetters;
+            puzzleText.innerHTML = finalDisplayLetters;
 
             // Add letter to lettersGuessed array
-            lettersGuessed.push(userLetter);
-            lettersGuessedText.textContent = lettersGuessed;
+            lettersGuessedCorrectly.push(userLetter);
 
             // Remove letter guessed from puzzleLetters array
             // This lets us know when a puzzle is solved
@@ -132,19 +179,36 @@ document.onkeyup = function (event) {
                     puzzleLetters.splice(i, 1);
                 }
             }
-            console.log(puzzleLetters.length);
 
             // Check if puzzle was solved or if more guesses need to be made
             if (puzzleLetters.length === 0) {
                 // If puzzle solved:
+                // Display correct answer
+                previousPuzzleText.textContent = `Previous puzzle: ${currentPuzzle}`;
+
+                // Show modal saying the user won;
+                $('#winnerModal').modal('show');
+    
+                // Add to wins and display on the screen
                 wins++;
                 winsText.textContent = wins;
-                // Could add removing puzzle from possible list so it's not reused
 
-                startGame();
+                // Remove this puzzle from word list so it doesn't come up again
+                removedPuzzles = puzzleWords.indexOf(currentPuzzle);
+                if (removedPuzzles > -1) {
+                    puzzleWords.splice(removedPuzzles, 1);
+                    console.log(`Number of puzzles remaining: ${puzzleWords.length}`);
+                }
+
+                // Check if any new puzzles remain
+                if (puzzleWords.length > 0) {
+                    // Start a new game
+                    startGame();
+                } else 
+                    // Inform the user that they've played all the puzzles.
+                    $('#allPlayedModal').modal('show')
+                
             }
-
-
         }
     }
 }
