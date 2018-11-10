@@ -15,7 +15,7 @@ In this sports-themed game, the user will feel like he or she is out on the fiel
   * Upon a loss, a modal will encourage the user to try again. 
   * Game can easily be expanded with new puzzles.
 
-![alt text](https://github.com/edcourtney74/Word-Guess-Game/assets/images/Game_photo.png "Game play")
+![Game play photo](https://github.com/edcourtney74/Word-Guess-Game/blob/master/assets/images/Game_photo.png "Game play")
 
         
       
