@@ -91,8 +91,6 @@ function startGame() {
 
     // Displays no letters guessed so far on display
     lettersGuessedText.textContent = "None";
-
-    console.log(puzzleWords);
 }
 
 // MAIN PROCESS===============================================
@@ -129,7 +127,7 @@ document.onkeyup = function (event) {
             if (guessesLeft === 0) {
                 // Display modal saying the user lost
                 $('#lostModal').modal('show');
-                
+
                 // Reveal answer
                 previousPuzzleText.innerHTML = `Previous puzzle: ${currentPuzzle}`;
 
@@ -137,20 +135,17 @@ document.onkeyup = function (event) {
                 removedPuzzles = puzzleWords.indexOf(currentPuzzle);
                 if (removedPuzzles > -1) {
                     puzzleWords.splice(removedPuzzles, 1);
-                    console.log(`Number of puzzles remaining: ${puzzleWords.length}`);
                 }
 
                 // Check if any new puzzles remain
                 if (puzzleWords.length > 0) {
                     // Start a new game
                     startGame();
-                } else 
+                } else
                     // Inform the user that they've played all the puzzles.
                     $('#allPlayedModal').modal('show');
-                
-                
                 }
-        }
+            }
         //   If letter is in the puzzle, 
         else {
             // For loop to see what position(s) the correct guess is in
@@ -158,7 +153,7 @@ document.onkeyup = function (event) {
 
                 if (userLetter === masterPuzzleLetters[i]) {
 
-                    // put userLetter in same index position in displayLetters array
+                // put userLetter in same index position in displayLetters array
                     displayLetters.splice(i, 1, userLetter);
                 }
             }
@@ -188,7 +183,7 @@ document.onkeyup = function (event) {
 
                 // Show modal saying the user won;
                 $('#winnerModal').modal('show');
-    
+
                 // Add to wins and display on the screen
                 wins++;
                 winsText.textContent = wins;
@@ -197,17 +192,15 @@ document.onkeyup = function (event) {
                 removedPuzzles = puzzleWords.indexOf(currentPuzzle);
                 if (removedPuzzles > -1) {
                     puzzleWords.splice(removedPuzzles, 1);
-                    console.log(`Number of puzzles remaining: ${puzzleWords.length}`);
                 }
 
                 // Check if any new puzzles remain
                 if (puzzleWords.length > 0) {
                     // Start a new game
                     startGame();
-                } else 
+                } else
                     // Inform the user that they've played all the puzzles.
                     $('#allPlayedModal').modal('show')
-                
             }
         }
     }
