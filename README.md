@@ -1,5 +1,6 @@
 # Sports Word Guess 
 In this sports-themed game, the user will feel like he or she is out on the field, trying to guess the word displayed on the scoreboard before running out of guesses.
+https://edcourtney74.github.io/Word-Guess-Game/
 
 ## Features
   * The game tracks puzzles used so that the user won't experience the same puzzle twice until all puzzles have been played.
